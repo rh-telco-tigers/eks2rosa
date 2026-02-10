@@ -1,33 +1,39 @@
-apiVersion: tekton.dev/v1beta1
+apiVersion: tekton.dev/v1
 kind: PipelineRun
 metadata:
-  generateName: stateful-app-migration-
+  generateName: message-board-app-migration-
 spec:
   pipelineSpec:
-    workspaces:
-    - name: kubeconfig
     tasks:
-    - name: redis-data01
-      taskRef:
-        name: crane-transfer-pvc
-        kind: ClusterTask
-      params:
-      - name: source-context
-        value: src
-      - name: dest-context
-        value: dest
-      - name: dest-namespace
-        value: guestbook
-      - name: source-namespace
-        value: guestbook
-      - name: source-pvc-name
-        value: redis-data01
-      - name: endpoint-type
-        value: nginx-ingress
-      workspaces:
+      - name: message-board-task
+        params:
+          - name: source-context
+            value: src
+          - name: dest-context
+            value: dest
+          - name: dest-namespace
+            value: message-board
+          - name: source-namespace
+            value: message-board
+          - name: source-pvc-name
+            value: message-board-data
+          - name: endpoint-type
+            value: route
+          - name: dest-storage-class-name
+            value: gp3
+        taskRef:
+          kind: Task
+          name: crane-transfer-pvc
+        workspaces:
+          - name: kubeconfig
+            workspace: kubeconfig
+    workspaces:
       - name: kubeconfig
-        workspace: kubeconfig
+  taskRunTemplate:
+    serviceAccountName: pipeline
+  timeouts:
+    pipeline: 1h0m0s
   workspaces:
-  - name: kubeconfig
-    secret:
-      secretName: kubeconfig
+    - name: kubeconfig
+      secret:
+        secretName: kubeconfig

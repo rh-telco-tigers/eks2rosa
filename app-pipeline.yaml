@@ -1,11 +1,11 @@
 apiVersion: tekton.dev/v1
 kind: PipelineRun
 metadata:
-  name: stateful-guestbook-example
+  name: stateful-message-board
 spec:
   params:
     - name: src-namespace
-      value: game-2048
+      value: message-board
     - name: src-context
       value: src
     - name: dest-context
