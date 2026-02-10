@@ -4,7 +4,7 @@
 
 This repository demonstrates how to migrate a **stateful Kubernetes application (with PVCs)** from **AWS EKS** to **Red Hat OpenShift Service on AWS (ROSA)** using **OpenShift Pipelines (Tekton)** with the **upstream Crane project**.
 
-The migration is fully Kubernetes-native, automated, and repeatable. Depending on customer requirements or feature triage, this functionality maybe considered in Openshift Migration Tools.
+The migration is fully Kubernetes-native, automated, and repeatable.
 ---
 
 ## **Overview**
