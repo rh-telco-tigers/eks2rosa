@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: message-board
+  labels:
+    app: message-board
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: message-board
+  template:
+    metadata:
+      labels:
+        app: message-board
+    spec:
+      containers:
+        - name: app
+          image: python:3.11-slim
+          command:
+            - python
+            - /app/app.py
+          env:
+            - name: DATA_DIR
+              value: /data
+          ports:
+            - containerPort: 8080
+          startupProbe:
+            httpGet:
+              path: /
+              port: 8080
+            periodSeconds: 5
+            failureThreshold: 24
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 8080
+            periodSeconds: 5
+          volumeMounts:
+            - name: data
+              mountPath: /data
+            - name: app
+              mountPath: /app
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: message-board-data
+        - name: app
+          configMap:
+            name: message-board-app
