@@ -23,7 +23,7 @@ spec:
           export KUBECONFIG="$(workspaces.kubeconfig.path)/kubeconfig"
         fi
 
-        kubectl apply --recursive=true -f $(workspaces.apply.path)/
+        kubectl apply --context="$(params.context)" --recursive=true -f $(workspaces.apply.path)/
   workspaces:
     - name: apply
       description: |
