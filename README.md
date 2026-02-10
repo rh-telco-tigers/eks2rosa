@@ -258,15 +258,13 @@ Expected output:
 
 ---
 
-## **Result**
+## **Summary**
 
-After completion:
+This migration showed a Kubernetes-native way to move a stateful application with PVCs from Amazon Elastic Kubernetes Service (EKS) to Red Hat OpenShift Service on AWS (ROSA) using OpenShift Pipelines and the upstream Crane project.
 
-* Application manifests are recreated on ROSA
+The migration runs as a Tekton PipelineRun on ROSA, making the process automated, repeatable, and easy to observe. A unified kubeconfig gives Crane access to both clusters, allowing it to export application resources from EKS, recreate them on ROSA, and migrate persistent data.
 
-* PVCs are restored
-
-* Stateful workload runs on OpenShift
+OpenShift Pipelines handles orchestration and visibility, while Crane performs application and PVC migration without manual scripting. Together, they provide a clean, enterprise-ready approach for migrating stateful Kubernetes workloads with minimal operational overhead.
 
 ---
 
