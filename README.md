@@ -217,12 +217,13 @@ oc create secret generic kubeconfig \
 ```
 oc --context dest create -f pvc-pipeline.yaml -n message-board
 ```
+<img width="630" height="632" alt="image" src="https://github.com/user-attachments/assets/2d7643a9-f47f-4945-9470-a56d1b2cbeb5" />
 
-![][image1]
 
 On EKS, during migration of PVC, you can see rsync pod like below: 
 
-![][image2]
+<img width="528" height="67" alt="image" src="https://github.com/user-attachments/assets/38e572c5-55ad-4493-b247-aada857ec963" />
+
 
 ---
 
@@ -236,7 +237,8 @@ oc --context dest create -f app-pipeline.yaml -n message-board
 
 Expected output:
 
-![][image3]
+<img width="629" height="412" alt="image" src="https://github.com/user-attachments/assets/acca4154-3c4d-4795-8b28-63d463ad20a0" />
+
 
 ---
 
