@@ -7,6 +7,7 @@ This repository demonstrates how to migrate a **stateful Kubernetes application 
 The migration is fully Kubernetes-native, automated, and repeatable.
 
 NOTE: Depending on customer requirements, this functionality maybe considered in Openshift Migration Tools.
+
 ---
 
 ## **Overview**
