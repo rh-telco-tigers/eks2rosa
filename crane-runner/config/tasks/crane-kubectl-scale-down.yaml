@@ -1,0 +1,43 @@
+apiVersion: tekton.dev/v1
+kind: Task
+metadata:
+  name: kubectl-scale-down
+  annotations:
+    description: |
+      Scale resource down using kubectl scale.
+spec:
+  params:
+    - name: context
+      type: string
+      description: |
+        Context to use when scaling down resources
+      default: ""
+    - name: namespace
+      type: string
+      description: |
+        Namespace to use when scaling down resources
+      default: ""
+    - name: resource-type
+      type: string
+      description: |
+        The resource type to be scaled down.
+  steps:
+    - name: kubectl-scale-down
+      image: quay.io/konveyor/crane-runner:latest
+      script: |
+        set -e
+        set -o pipefail
+        set -x
+
+        #!/bin/bash
+        count=$(kubectl get --context "$(params.context)" "$(params.resource-type)" --namespace "$(params.namespace)" 2> /dev/null | wc -l)
+        if [ $count -ne "0" ]; then
+          kubectl scale --context "$(params.context)" --namespace "$(params.namespace)" --replicas=0 "$(params.resource-type)" --all;
+        fi
+      env:
+        - name: KUBECONFIG
+          value: $(workspaces.kubeconfig.path)/kubeconfig
+  workspaces:
+    - name: kubeconfig
+      description: |
+        The kubeconfig for accessing the source cluster.

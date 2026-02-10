@@ -1,0 +1,49 @@
+apiVersion: tekton.dev/v1
+kind: Task
+metadata:
+  name: crane-export
+  annotations:
+    description: |
+      Discover, and write to disk, all of the resources from a specified
+      cluster's namespace.
+spec:
+  params:
+    - name: context
+      type: string
+      description: |
+        The name of the context from kubeconfig representing the source
+        cluster.
+
+        You can get this information in your current environment using
+        `kubectl config get-contexts` to describe your one or many
+        contexts.
+    - name: namespace
+      type: string
+      description: |
+        The namespace from which to export resources.
+  steps:
+    - name: crane-export
+      image: quay.io/konveyor/crane-runner:latest
+      script: |
+        set -e
+        set -o pipefail
+        set -x
+
+        crane export \
+          --context="$(params.context)" \
+          --namespace="$(params.namespace)" \
+          --export-dir="$(workspaces.export.path)"
+
+        find $(workspaces.export.path)
+      env:
+        - name: KUBECONFIG
+          value: $(workspaces.kubeconfig.path)/kubeconfig
+  workspaces:
+    - name: export
+      description: |
+        Directory where results of crane export will be stored for future use
+        in other tasks.
+      mountPath: /var/crane/export
+    - name: kubeconfig
+      description: |
+        The kubeconfig for accessing the cluster.

@@ -1,0 +1,33 @@
+apiVersion: tekton.dev/v1beta1
+kind: PipelineRun
+metadata:
+  generateName: stateful-app-migration-
+spec:
+  pipelineSpec:
+    workspaces:
+    - name: kubeconfig
+    tasks:
+    - name: redis-data01
+      taskRef:
+        name: crane-transfer-pvc
+        kind: ClusterTask
+      params:
+      - name: source-context
+        value: src
+      - name: dest-context
+        value: dest
+      - name: dest-namespace
+        value: guestbook
+      - name: source-namespace
+        value: guestbook
+      - name: source-pvc-name
+        value: redis-data01
+      - name: endpoint-type
+        value: nginx-ingress
+      workspaces:
+      - name: kubeconfig
+        workspace: kubeconfig
+  workspaces:
+  - name: kubeconfig
+    secret:
+      secretName: kubeconfig

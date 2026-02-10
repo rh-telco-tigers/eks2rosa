@@ -1,0 +1,63 @@
+apiVersion: tekton.dev/v1
+kind: Task
+metadata:
+  name: crane-transform
+  annotations:
+    description: |
+      Take the resources from a `crane-export` and generate JSON patches to
+      remove cluster specific metadata and status information. If optional-flags
+      are defined, they will be passed to all enabled plugins.
+spec:
+  params:
+    - name: optional-flags
+      type: string
+      description: |
+        Comma separated list of `flag-name=value` pairs. These flags with values
+        will be passed into all plugins that are executed in the transform
+        operation.
+      default: ""
+  steps:
+    - name: crane-transform
+      image: quay.io/konveyor/crane-runner:latest
+      script: |
+        set -e
+        set -o pipefail
+        set -x
+
+        if [ ! -z "${OPTIONAL_FLAG_VALUES}" ]; then
+          OPTIONAL_FLAGS="--optional-flags=${OPTIONAL_FLAG_VALUES}"
+        fi
+
+        crane transform \
+          --ignored-patches-dir="$(workspaces.ignored-patches.path)" \
+          --flags-file="$(workspaces.craneconfig.path)" \
+          --export-dir="$(workspaces.export.path)" \
+          --transform-dir=$(workspaces.transform.path) \
+          ${OPTIONAL_FLAGS}
+
+        find $(workspaces.transform.path)
+        if [ "$(workspaces.ignored-patches.bound)" == "true" ]; then
+          find $(workspaces.ignored-patches.path)
+        fi
+      env:
+        - name: OPTIONAL_FLAG_VALUES
+          value: $(params.optional-flags)
+  workspaces:
+    - name: export
+      description: |
+        This is the folder where the results of crane export were stored.
+      mountPath: /var/crane/export
+    - name: transform
+      description: |
+        This is the folder where we will store the results of crane transform.
+      mountPath: /var/crane/transform
+    - name: ignored-patches
+      description: |
+        This is the folder where the results of crane ignored-patches were stored.
+      mountPath: /var/crane/ignored-patches
+      optional: true
+    - name: craneconfig
+      description: |
+        This is where we hold the configuration file for crane.
+      mountPath: /var/crane/config
+      optional: true

@@ -1,0 +1,105 @@
+apiVersion: tekton.dev/v1
+kind: Task
+metadata:
+  name: crane-image-sync
+  annotations:
+    description: |
+      Sync the internal images of one cluster's registry to another.
+spec:
+  params:
+    - name: src-context
+      type: string
+      description: |
+        Name of the context used for accessing the source cluster.
+    - name: src-internal-registry-url
+      type: string
+      description: |
+        This is the internal registry url (ie. image-registry.openshift-image-registry.svc:5000).
+    - name: src-public-registry-url
+      type: string
+      description: |
+        This is the public registry url.
+    - name: src-tls-verify
+      type: string
+      default: 'true'
+      description: |
+        Require HTTPS and verify certificates when talking to the container registry or daemon.
+    - name: dest-context
+      type: string
+      description: |
+        Name of the context used for accessing the destination cluster.
+    - name: dest-public-registry-url
+      type: string
+      description: |
+        This is the public registry url of the destination cluster.
+    - name: dest-namespace
+      type: string
+      description: |
+        The namespace where the images should be synced.
+    - name: dest-tls-verify
+      type: string
+      default: 'true'
+      description: |
+        Require HTTPS and verify certificates when talking to the container registry or daemon.
+  steps:
+    - name: crane-skopeo-sync-gen
+      image: quay.io/konveyor/crane-runner:latest
+      script: |
+        set -e
+        set -o pipefail
+        set -x
+
+        crane skopeo-sync-gen \
+          --export-dir="$(workspaces.export.path)" \
+          --internal-registry-url=${SRC_INTERNAL_URL} \
+          --registry-url=${SRC_PUBLIC_URL} | tee "$(workspaces.skopeo.path)/source.yaml"
+      env:
+        - name: SRC_INTERNAL_URL
+          value: $(params.src-internal-registry-url)
+        - name: SRC_PUBLIC_URL
+          value: $(params.src-public-registry-url)
+    - name: skopeo-sync
+      image: quay.io/konveyor/crane-runner:latest
+      script: |
+        set -e
+        set -o pipefail
+        set -x
+
+        skopeo sync \
+          --src yaml \
+          --src-username "$(oc --context ${SRC_CONTEXT} whoami)" \
+          --src-password "$(oc --context ${SRC_CONTEXT} whoami -t)" \
+          --src-tls-verify=${SRC_TLS_VERIFY} \
+          --dest docker \
+          --dest-username "$(oc --context ${DEST_CONTEXT} whoami)" \
+          --dest-password "$(oc --context ${DEST_CONTEXT} whoami -t)" \
+          --dest-tls-verify=${DEST_TLS_VERIFY} \
+          "$(workspaces.skopeo.path)/source.yaml" \
+          "${DEST_REGISTRY}/${DEST_NAMESPACE}"
+      env:
+        - name: KUBECONFIG
+          value: $(workspaces.kubeconfig.path)/kubeconfig
+        - name: SRC_CONTEXT
+          value: $(params.src-context)
+        - name: SRC_TLS_VERIFY
+          value: $(params.src-tls-verify)
+        - name: DEST_CONTEXT
+          value: $(params.dest-context)
+        - name: DEST_TLS_VERIFY
+          value: $(params.dest-tls-verify)
+        - name: DEST_REGISTRY
+          value: $(params.dest-public-registry-url)
+        - name: DEST_NAMESPACE
+          value: $(params.dest-namespace)
+  workspaces:
+    - name: export
+      description: |
+        This is the folder where the results of crane export were stored.
+      mountPath: /var/crane/export
+    - name: skopeo
+      description: |
+        This is the folder where we will store the results of crane skopeo-sync-gen.
+      mountPath: /var/crane/skopeo
+    - name: kubeconfig
+      description: |
+        The kubeconfig for accessing the cluster.
