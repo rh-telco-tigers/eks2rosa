@@ -5,7 +5,23 @@
 This repository demonstrates how to migrate a **stateful Kubernetes application (with PVCs)** from **AWS EKS** to **Red Hat OpenShift Service on AWS (ROSA)** using **OpenShift Pipelines (Tekton)** with the **upstream Crane project**.
 
 The migration is fully Kubernetes-native, automated, and repeatable.
+
+**Red Hat OpenShift Service on AWS (ROSA)**
+
+[ROSA](https://docs.redhat.com/en/documentation/red_hat_openshift_service_on_aws/4) is a fully managed OpenShift platform jointly operated by Red Hat and AWS. It provides enterprise Kubernetes with built-in security, developer tooling, and operational best practices on AWS infrastructure. ROSA includes features such as OpenShift Pipelines, integrated authentication, enhanced security controls (SCCs), and consistent application portability across hybrid and multi-cloud environments.
+
+**Amazon Elastic Kubernetes Service (EKS)**
+
+[Amazon EKS](https://aws.amazon.com/pm/eks/) is a fully managed Kubernetes service provided by AWS. It handles the control plane management, including Kubernetes upgrades, high availability, and security patching, allowing teams to focus on deploying and operating containerized applications. EKS integrates natively with AWS services such as IAM, VPC, and EBS, making it a common choice for running production Kubernetes workloads on AWS.
+
+**Crane**
+
+[Crane](https://github.com/migtools/crane-runner) is an upstream, Kubernetes-native migration project designed to move applications and their associated data between Kubernetes clusters. It supports exporting and restoring Kubernetes resources, including Persistent Volume Claims, while preserving application state. Crane is often used as the underlying engine for automated migration workflows and integrates well with CI/CD tools such as Tekton.
+
 ---
+
+## **High Level Diagram**
+<img width="800" height="800" alt="image" src="https://github.com/user-attachments/assets/6c22774b-61e1-4c48-9076-3063d920caf9" />
 
 ## **Overview**
 
