@@ -102,7 +102,7 @@ Deploy the Crane Tekton tasks into the ROSA cluster.
 ```
 # go to crane-runner folder in repo
 
-git clone <this repo>
+git clone https://github.com/rh-telco-tigers/eks2rosa.git
 
 cd crane-runner
 oc apply -k config/default -n message-board
