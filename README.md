@@ -53,9 +53,9 @@ The migration is fully Kubernetes-native, automated, and repeatable.
 
 ### **Clusters**
 
-* AWS EKS cluster (source)
+* AWS EKS 13 cluster (k8s v1.34) (source)
 
-* ROSA cluster (destination)
+* ROSA cluster v4.18.32 (destination)
 
 ### **Tools**
 
@@ -108,7 +108,7 @@ cd crane-runner
 oc apply -k config/default -n message-board
 ```
 
-This installs all required Tekton Tasks and supporting resources.
+This installs all required Tekton Tasks and supporting resources. Tasks types and CRD versions had to be updated to work on OpenShift Pipelines. 
 
 ---
 
