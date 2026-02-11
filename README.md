@@ -8,7 +8,7 @@ The migration is fully Kubernetes-native, automated, and repeatable.
 
 **Red Hat OpenShift Service on AWS (ROSA)**
 
-[ROSA](https://docs.redhat.com/en/documentation/red_hat_openshift_service_on_aws/4) is a fully managed OpenShift platform jointly operated by Red Hat and AWS. It provides enterprise Kubernetes with built-in security, developer tooling, and operational best practices on AWS infrastructure. ROSA includes features such as OpenShift Pipelines, integrated authentication, enhanced security controls (SCCs), and consistent application portability across hybrid and multi-cloud environments.
+[ROSA](https://docs.redhat.com/en/documentation/red_hat_openshift_service_on_aws/4) is a fully managed OpenShift platform jointly operated by Red Hat and AWS. It provides enterprise Kubernetes with built-in security, developer tooling, and operational best practices on AWS infrastructure. ROSA includes features such as OpenShift Pipelines, integrated authentication, enhanced security controls (SCCs), and consistent application portability across hybrid and multi-cloud environments. Tekton is the upstream project of OpenShift Pipelines. The Tekton pipelines and tasks are run in OpenShift Pipelines.
 
 **Amazon Elastic Kubernetes Service (EKS)**
 
@@ -101,6 +101,8 @@ Deploy the Crane Tekton tasks into the ROSA cluster.
 
 ```
 # go to crane-runner folder in repo
+
+git clone <this repo>
 
 cd crane-runner
 oc apply -k config/default -n message-board
