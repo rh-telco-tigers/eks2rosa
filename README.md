@@ -224,8 +224,8 @@ EOF
 Crane pipeline tasks read the kubeconfig from a Kubernetes Secret.
 
 ```
-oc delete secret kubeconfig -n message-board
-oc create secret generic kubeconfig \
+oc --context dest delete secret kubeconfig -n message-board
+oc --context dest create secret generic kubeconfig \
   --from-file=kubeconfig=/tmp/kubeconfig-crane \
   -n message-board
 ```
