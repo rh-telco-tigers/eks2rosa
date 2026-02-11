@@ -21,7 +21,9 @@ The migration is fully Kubernetes-native, automated, and repeatable.
 ---
 
 ## **High Level Diagram**
-<img width="800" height="800" alt="image" src="https://github.com/user-attachments/assets/6c22774b-61e1-4c48-9076-3063d920caf9" />
+
+<img width="956" height="539" alt="image" src="https://github.com/user-attachments/assets/49dce93a-c2f7-4df7-b2e6-fcc5e528a4ff" />
+
 
 ## **Overview**
 
