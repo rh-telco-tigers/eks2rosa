@@ -8,7 +8,7 @@ Simple web app: submit messages via the form; they are appended to a file on a P
 ## Deploy
 
 ```bash
-kubectl apply -k examples/resources/message-board/
+kubectl apply -k eks-app/message-board/
 ```
 
 ## Access
