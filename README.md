@@ -281,6 +281,9 @@ OpenShift Pipelines handles orchestration and visibility, while Crane performs a
 
 * Although demonstrated with ROSA, this migration approach is fully compatible with other OpenShift cluster variants as the destination environment.
   
+* **PVC migration**: Crane today, EBS snapshot as alternative automation
+  We use Crane (e.g. transfer-pvc) to migrate workloads and PVC data from EKS to ROSA. For PVCs, an alternative and future plan is EBS snapshot–based migration: snapshot the EBS volume that backs the EKS PV (same AWS account), create a new EBS volume   from that snapshot in the ROSA region/AZ, then create a PV (CSI volumeHandle) and PVC on ROSA. That avoids moving data over the wire and does not require VPC peering between EKS and ROSA; we may automate this (e.g. Tekton pipeline) later.
+
 * EKS tokens expire quickly — regenerate if the pipeline fails
 
 * Ensure network access between clusters
