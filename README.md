@@ -279,6 +279,8 @@ OpenShift Pipelines handles orchestration and visibility, while Crane performs a
 
 ## **Notes & Limitations**
 
+* Although demonstrated with ROSA, this migration approach is fully compatible with other OpenShift cluster variants as the destination environment.
+  
 * EKS tokens expire quickly — regenerate if the pipeline fails
 
 * Ensure network access between clusters
